@@ -1,10 +1,11 @@
+import { hatch } from '../components/Sketch'
 import { useMemo } from 'react'
 import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorLine } from '../components/chart'
 import { LiftRow } from '../components/LiftRow'
 import { RangeControl } from '../components/RangeControl'
 import { Icon, Tip } from '../components/ui'
-import { habits, kpis, liftSummaries, setsByMuscle, strengthIndex, weekStreaks } from '../lib/analytics'
+import { DAY, habits, kpis, liftSummaries, momentum, setsByMuscle, strengthIndex, weekStreaks } from '../lib/analytics'
 import { fmtDay, fmtDuration, fmtHour, fmtMonth, plural, round } from '../lib/format'
 import { go } from '../lib/route'
 import { useApp } from '../lib/store'
@@ -33,10 +34,11 @@ export function Home() {
   const k = useMemo(() => kpis(ws, stats, range), [ws, stats, range])
   const streak = useMemo(() => weekStreaks(all), [all])
   const lifts = useMemo(() => liftSummaries(stats, range).filter((l) => l.stat.kind !== 'timed' && l.stat.kind !== 'cardio'), [stats, range])
-  const top = useMemo(() => [...lifts].sort((a, b) => b.sessions.length - a.sessions.length).slice(0, 6), [lifts])
+  const top = useMemo(() => [...lifts].sort((a, b) => b.sessions.length - a.sessions.length).slice(0, 5), [lifts])
   const h = useMemo(() => habits(ws), [ws])
   const muscles = useMemo(() => setsByMuscle(ws, stats), [ws, stats])
   const watch = useMemo(() => watchOuts(all, stats, unit), [all, stats, unit])
+  const mo = useMemo(() => ({ now: momentum(stats), before: momentum(stats, Date.now() - 28 * DAY) }), [stats])
   const lastPR = useMemo(() => {
     let best: { name: string; date: Date } | null = null
     for (const s of stats) for (const x of s.sessions) if (x.isPR && (!best || x.date > best.date)) best = { name: s.name, date: x.date }
@@ -77,6 +79,8 @@ export function Home() {
         <div><div className="num-v">{streak.current}<small>{streak.current === 1 ? 'week' : 'weeks'}</small></div><div className="num-k">Current streak</div></div>
       </div>
 
+      {mo.now.total > 0 && <Momentum now={mo.now} before={mo.before} />}
+
       {watch.length > 0 && (
         <button className="watch-line" onClick={() => go('watch')}>
           <span className="warn-ic">
@@ -103,12 +107,6 @@ export function Home() {
         <div className="chart-main" aria-label="Strength over time">
           <ResponsiveContainer>
             <ComposedChart data={idx} margin={{ top: 10, right: 4, bottom: 0, left: 4 }}>
-              <defs>
-                <linearGradient id="home-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={t.primary} stopOpacity={0.12} />
-                  <stop offset="100%" stopColor={t.primary} stopOpacity={0} />
-                </linearGradient>
-              </defs>
               <XAxis dataKey="week" type="number" scale="time" domain={['dataMin', 'dataMax']} {...axis(t)} tickFormatter={(v) => fmtMonth(v)} minTickGap={56} dy={6} />
               <YAxis {...axis(t)} orientation="right" domain={[ticks[0], ticks[ticks.length - 1]]} ticks={ticks} tickFormatter={(v) => (v === 100 ? 'Start' : `${v > 100 ? '+' : ''}${Math.round(v - 100)}%`)} width={48} />
               <Tooltip
@@ -119,7 +117,7 @@ export function Home() {
                   ) : null
                 }
               />
-              <Area type="monotone" dataKey="index" stroke="none" fill="url(#home-fill)" animationDuration={1200} />
+              <Area type="monotone" dataKey="index" stroke="none" fill={hatch(t.primary)} fillOpacity={0.55} animationDuration={1200} />
               <Line type="monotone" dataKey="index" stroke={t.primary} strokeWidth={2.25} dot={false} activeDot={{ r: 4.5, fill: t.primary, stroke: t.surface, strokeWidth: 2 }} animationDuration={1200} />
             </ComposedChart>
           </ResponsiveContainer>
@@ -167,6 +165,34 @@ function LinkRow({ title, text, to }: { title: string; text: string; to: string 
     <button className="link-row" onClick={() => go(to)}>
       <b>{title}</b>
       <span>{text}</span>
+      <Icon.chevron />
+    </button>
+  )
+}
+
+type Mo = ReturnType<typeof momentum>
+
+/** Good-news line: how many of your current lifts are still setting new bests. */
+function Momentum({ now, before }: { now: Mo; before: Mo }) {
+  const pct = Math.round(now.share * 100)
+  const diff = before.total ? pct - Math.round(before.share * 100) : 0
+  const shown = now.up.slice(0, 3)
+  return (
+    <button className="momentum" onClick={() => go('records')}>
+      <div className={`mo-v ${pct >= 25 ? 'good' : ''}`}>{pct}%</div>
+      <div className="mo-main">
+        <div className="mo-t">Momentum</div>
+        <div className="mo-s">
+          {now.up.length} of {now.total} lifts you train set a new best in the last 4 weeks
+          {diff !== 0 && <span className={diff > 0 ? 'good' : 'muted'}> ({diff > 0 ? 'up' : 'down'} {Math.abs(diff)} points)</span>}
+        </div>
+        {shown.length > 0 && (
+          <div className="mo-lifts">
+            {shown.join(', ')}
+            {now.up.length > shown.length && ` and ${now.up.length - shown.length} more`}
+          </div>
+        )}
+      </div>
       <Icon.chevron />
     </button>
   )

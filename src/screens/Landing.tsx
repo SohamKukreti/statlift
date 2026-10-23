@@ -19,7 +19,7 @@ export function Landing({ onCsv, onSample }: { onCsv: (text: string, name: strin
   return (
     <section className="landing">
       <h1 className="title">See how strong you have become.</h1>
-      <p className="lede">Liftlog reads your Hevy workout export and shows your progress on every lift. Your file stays on this device.</p>
+      <p className="lede">Statlift reads your Hevy workout export and shows your progress on every lift. Your file stays on this device.</p>
 
       <div
         className={`drop ${over ? 'over' : ''}`}

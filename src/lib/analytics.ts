@@ -388,3 +388,17 @@ export function monthly(ws: Workout[]) {
   }
   return [...m.values()].sort((a, b) => a.month.getTime() - b.month.getTime())
 }
+
+/**
+ * Momentum: the share of the lifts you train now that set a new best in the last 4 weeks.
+ * A lift counts if you did it in those 4 weeks and at least twice before, so a new lift is not a free best.
+ */
+export function momentum(stats: ExerciseStats[], now = Date.now()) {
+  const from = now - 28 * DAY
+  const inWindow = (d: Date) => d.getTime() > from && d.getTime() <= now
+  const active = stats.filter(
+    (s) => (s.kind === 'weighted' || s.kind === 'bodyweight') && s.sessions.some((x) => inWindow(x.date)) && s.sessions.filter((x) => x.date.getTime() <= from).length >= 2,
+  )
+  const up = active.filter((s) => s.sessions.some((x) => x.isPR && inWindow(x.date)))
+  return { share: active.length ? up.length / active.length : 0, up: up.map((s) => s.name), total: active.length }
+}

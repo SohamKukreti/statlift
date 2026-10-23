@@ -1,3 +1,4 @@
+import { hatch } from '../components/Sketch'
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorBar, grid, STILL } from '../components/chart'
@@ -46,7 +47,7 @@ export function Calendar() {
               <XAxis dataKey="t" {...axis(t)} tickFormatter={(v) => fmtMonth(v)} minTickGap={24} dy={6} />
               <YAxis hide />
               <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={fmtMonth(payload[0].payload.t)} rows={[{ label: 'Workouts', value: String(payload[0].payload.workouts) }]} /> : null)} />
-              <Bar dataKey="workouts" fill={t.primary} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
+              <Bar dataKey="workouts" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -68,7 +69,7 @@ export function Calendar() {
                 <XAxis dataKey="week" {...axis(t)} tickFormatter={(v) => fmtMonth(v)} minTickGap={56} dy={6} />
                 <YAxis {...axis(t)} orientation="right" tickFormatter={(v) => compact(v)} width={44} tickCount={4} />
                 <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={`Week of ${fmtDay(payload[0].payload.week)}`} rows={[{ label: 'Weight', value: `${compact(payload[0].payload.volume)} ${unit}` }, { label: 'Sets', value: String(payload[0].payload.sets) }, { label: 'Time', value: fmtDuration(payload[0].payload.minutes) }]} /> : null)} />
-                <Bar dataKey={metric} fill={t.primary} radius={[2, 2, 0, 0]} {...STILL} />
+                <Bar dataKey={metric} fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[2, 2, 0, 0]} {...STILL} />
                 <ReferenceLine y={avg} stroke={t.text2} strokeDasharray="3 3" />
               </BarChart>
             </ResponsiveContainer>

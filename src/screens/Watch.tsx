@@ -19,7 +19,7 @@ export function Watch() {
             {items.length > 0 && <span className="warn-ic" aria-hidden><Icon.alert /></span>}
             {items.length ? `${items.length} things to watch out for` : 'Nothing to watch out for'}
           </h1>
-          <p className="lede">Based on your recent training, as of today. Liftlog sees your weights, reps and dates, not your form.</p>
+          <p className="lede">From your recent weights, reps and dates.</p>
         </div>
       </section>
 
@@ -56,7 +56,7 @@ function Row({ w, urgent }: { w: Item; urgent: boolean }) {
       </div>
       <div className="w-main">
         <div className="w-subject">{w.subject}</div>
-        <p className="w-body">{w.body}</p>
+        <p className="w-issue">{w.body}</p>
         <div className="w-tip">
           <span className="w-tip-k">What to do</span>
           {w.tip}

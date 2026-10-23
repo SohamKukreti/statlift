@@ -9,6 +9,8 @@ import { CHART, ThemeCtx, type Mode } from './lib/theme'
 import type { Dataset, Unit } from './lib/types'
 import { Icon, Seg } from './components/ui'
 import { ShareModal } from './components/Share'
+import { Logo } from './components/Logo'
+import { SketchDefs, useSketchBoxes } from './components/Sketch'
 import { Landing } from './screens/Landing'
 import { Home } from './screens/Home'
 import { Lift } from './screens/Lift'
@@ -18,6 +20,8 @@ import { Calendar } from './screens/Calendar'
 import { Balance } from './screens/Balance'
 import { Habits } from './screens/Habits'
 import { Watch } from './screens/Watch'
+
+type Font = 'hand' | 'plain'
 
 const fromInput = (s: string) => {
   const [y, m, d] = s.split('-').map(Number)
@@ -39,6 +43,12 @@ const systemMode = (): Mode => (window.matchMedia?.('(prefers-color-scheme: dark
 
 export default function App() {
   const [mode, setMode] = useState<Mode>(() => pref<Mode>('theme', systemMode()))
+  useSketchBoxes()
+  const [font, setFont] = useState<Font>(() => pref<Font>('font', 'hand'))
+  useEffect(() => {
+    document.documentElement.dataset.font = font
+    setPref('font', font)
+  }, [font])
   const [data, setData] = useState<Dataset | null>(initialData)
   const [unit, setUnit] = useState<Unit>(() => pref<Unit>('unit', data?.sourceUnit ?? 'kg'))
   const [preset, setPreset] = useState<Preset>(() => pref<Preset>('range2', 'all'))
@@ -118,11 +128,12 @@ export default function App() {
 
   return (
     <ThemeCtx.Provider value={CHART[mode]}>
+      <SketchDefs />
       <div className="page">
         {!data ? (
           <>
             <header className="top">
-              <span className="wordmark"><Icon.logo /> Liftlog</span>
+              <span className="wordmark"><Logo /> Statlift</span>
               {themeBtn}
             </header>
             <Landing onCsv={onCsv} onSample={onSample} />
@@ -130,7 +141,7 @@ export default function App() {
         ) : (
           <AppCtx.Provider value={{ data, stats, all, ws, range, preset, setPreset, custom, setCustom, unit, overrides, setOverride }}>
             <header className="top">
-              <button className="wordmark" onClick={() => go('')}><Icon.logo /> Liftlog</button>
+              <button className="wordmark" onClick={() => go('')}><Logo /> Statlift</button>
               <button className="ghost" onClick={() => setSharing(true)}><Icon.share /> <span className="lbl">Share</span></button>
               {themeBtn}
               <div className="menu-wrap">
@@ -140,6 +151,10 @@ export default function App() {
                     <div className="menu-row">
                       Units
                       <Seg value={unit} onChange={setUnit} options={[{ v: 'kg', label: 'kg' }, { v: 'lbs', label: 'lb' }]} />
+                    </div>
+                    <div className="menu-row">
+                      Font
+                      <Seg value={font} onChange={setFont} options={[{ v: 'hand', label: 'Hand' }, { v: 'plain', label: 'Plain' }]} />
                     </div>
                     <hr />
                     <button className="item" onClick={() => fileInput.current?.click()}>Load a different file</button>

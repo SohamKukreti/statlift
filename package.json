@@ -1,5 +1,5 @@
 {
-  "name": "liftlog",
+  "name": "statlift",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,7 +15,8 @@
     "papaparse": "^5.7.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "roughjs": "^4.6.6"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

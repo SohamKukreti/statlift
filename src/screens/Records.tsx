@@ -1,3 +1,4 @@
+import { hatch } from '../components/Sketch'
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorBar, grid, STILL } from '../components/chart'
@@ -67,7 +68,7 @@ export function Records() {
               <XAxis dataKey="t" {...axis(t)} tickFormatter={(v) => fmtMonth(v)} minTickGap={24} dy={6} />
               <YAxis {...axis(t)} orientation="right" allowDecimals={false} width={32} tickCount={4} />
               <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={fmtMonth(payload[0].payload.t)} rows={[{ label: 'New bests', value: String(payload[0].payload.n) }]} /> : null)} />
-              <Bar dataKey="n" fill={t.primary} radius={[3, 3, 0, 0]} {...STILL} />
+              <Bar dataKey="n" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[3, 3, 0, 0]} {...STILL} />
             </BarChart>
           </ResponsiveContainer>
         </div>

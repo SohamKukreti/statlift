@@ -1,51 +1,61 @@
+/* Fonts and colours come from Soham's blog: hand-written font, black ink on white paper, a ballpoint-blue pen. */
+@font-face { font-family: 'My-Hand'; src: url('./assets/My-Hand-Regular.woff2') format('woff2'); font-display: block; }
+@font-face { font-family: 'Recursive Mono Casual'; src: url('./assets/Recursive-MonoCasual.woff2') format('woff2'); font-display: swap; }
+@font-face { font-family: 'Lora'; src: url('./assets/Lora.woff2') format('woff2'); font-weight: 200 900; font-display: swap; }
+
 :root {
   color-scheme: light;
   --bg: #ffffff;
-  --fill: #f4f5f7;
-  --fill-2: #eceef1;
-  --line: #e6e8eb;
-  --ink: #17181c;
-  --ink-2: #5f636b;
-  --ink-3: #9a9ea6;
-  --blue: #2457d6;
+  --fill: #f6f4ef;
+  --fill-2: #eeebe4;
+  --line: #d9d5cc;
+  --ink: #111111;
+  --ink-2: #5d5a55;
+  --ink-3: #8f8b84;
+  --blue: #2447c7;
+  --wash: #eef1fd;
   --good: #17803d;
-  --warn: #a15c00;
-  --focus: #2457d6;
-  --orange: #c2570c;
-  --font: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --warn: #b4461f;
+  --focus: #2447c7;
+  --orange: #b4461f;
+  --font: 'My-Hand', 'Recursive Mono Casual', Georgia, serif; /* the mono font fills signs the hand font lacks, like % */
+  --mono: 'Recursive Mono Casual', ui-monospace, Menlo, monospace;
 }
+:root[data-font='plain'] { --font: 'Lora', Georgia, serif; }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #111214;
-    --fill: #1a1b1f;
-    --fill-2: #23252a;
-    --line: #26282d;
-    --ink: #eeeef0;
-    --ink-2: #a3a6ad;
-    --ink-3: #6e7178;
-    --blue: #6b97ff;
-    --good: #4cc27a;
-    --warn: #e0a04a;
-    --focus: #6b97ff;
-    --orange: #f08a3c;
+      color-scheme: dark;
+  --bg: #17181b;
+  --fill: #1f2024;
+  --fill-2: #27282d;
+  --line: #3a3b40;
+  --ink: #ecebe7;
+  --ink-2: #a8a59e;
+  --ink-3: #85827b;
+  --blue: #93a8ff;
+  --wash: #22273a;
+  --good: #6fcf8f;
+  --warn: #f0a07f;
+  --focus: #93a8ff;
+  --orange: #f0a07f;
   }
 }
 :root[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #111214;
-  --fill: #1a1b1f;
-  --fill-2: #23252a;
-  --line: #26282d;
-  --ink: #eeeef0;
-  --ink-2: #a3a6ad;
-  --ink-3: #6e7178;
-  --blue: #6b97ff;
-  --good: #4cc27a;
-  --warn: #e0a04a;
-  --focus: #6b97ff;
-    --orange: #f08a3c;
+      color-scheme: dark;
+  --bg: #17181b;
+  --fill: #1f2024;
+  --fill-2: #27282d;
+  --line: #3a3b40;
+  --ink: #ecebe7;
+  --ink-2: #a8a59e;
+  --ink-3: #85827b;
+  --blue: #93a8ff;
+  --wash: #22273a;
+  --good: #6fcf8f;
+  --warn: #f0a07f;
+  --focus: #93a8ff;
+  --orange: #f0a07f;
 }
 
 * { box-sizing: border-box; }
@@ -54,8 +64,10 @@ html, body { overflow-x: clip; }
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 400 15px/1.55 var(--font);
+  font: 400 15px/1.5 var(--font);
   font-feature-settings: 'tnum' 1;
+  /* The hand font is small for its size. This scales it so every size in this file still fits. */
+  font-size-adjust: ex-height 0.56;
   -webkit-font-smoothing: antialiased;
 }
 button, input, select { font: inherit; color: inherit; }
@@ -68,7 +80,7 @@ a { color: inherit; }
 /* ---------- header ---------- */
 .top { display: flex; align-items: center; gap: 8px; height: 72px; }
 .wordmark { font-weight: 600; font-size: 17px; letter-spacing: -0.01em; background: none; border: 0; padding: 0; margin-right: auto; display: flex; align-items: center; gap: 9px; }
-.wordmark svg { width: 22px; height: 22px; }
+.wordmark svg { width: 44px; height: 28px; }
 .ghost { background: none; border: 0; height: 36px; padding: 0 12px; border-radius: 9px; color: var(--ink-2); font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
 .ghost:hover { background: var(--fill); color: var(--ink); }
 .ghost svg { width: 17px; height: 17px; }
@@ -221,7 +233,7 @@ table.t { width: 100%; border-collapse: collapse; font-size: 14px; }
 .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .share { width: 400px; max-width: 100%; aspect-ratio: 4 / 5; border-radius: 14px; padding: 28px; background: #ffffff; color: #17181c; display: flex; flex-direction: column; border: 1px solid #e6e8eb; font-family: var(--font); font-feature-settings: 'tnum' 1; }
 .share .s-name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 7px; }
-.share .s-name svg { width: 18px; height: 18px; }
+.share .s-name svg { width: 34px; height: 22px; }
 .share .s-big { font-size: 52px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-top: 30px; }
 .share .s-sub { color: #5f636b; font-size: 14px; margin-top: 8px; }
 .share .s-chart { height: 110px; margin: 20px -2px 0; }
@@ -352,4 +364,155 @@ details.more .grid-2 > .panel { margin-top: 12px; }
   .link-row svg { grid-column: 2; grid-row: 1 / 3; }
   details.more { padding: 0 16px; }
   .numbers { gap: 10px; }
+}
+
+/* ================= sketch look: boxes and marks drawn by hand ================= */
+/* The hand font has one weight, so the browser must not fake bold. Lora (plain font) keeps its weights. */
+:root:not([data-font='plain']) body { font-synthesis: none; }
+:root:not([data-font='plain']) body * { font-weight: 400 !important; letter-spacing: 0 !important; }
+[data-font='plain'] body { font-size-adjust: none; }
+.title { line-height: 1.08; }
+.h2 { font-size: 21px; }
+.panel .h2 { font-size: 21px; }
+.tick-mono, .recharts-cartesian-axis-tick text { font-family: var(--mono); font-size: 11.5px !important; }
+
+/* Each box gets a pen outline, drawn by roughjs (see Sketch.tsx) on a layer behind its content.
+   --sk-c is the pen colour and --sk-w its width. */
+.panel, details.more, .watch-line, .w-card, .numbers > div, .w-sum, .btn, .sample-note, .menu, .modal, .tip, .w-tip, .drop, .tile {
+  position: relative;
+  border-color: transparent !important;
+  border-radius: 12px;
+  box-shadow: none;
+  --sk-c: var(--ink);
+  --sk-w: 1.6;
+}
+.panel::before, details.more::before, .watch-line::before, .w-card::before, .numbers > div::before, .w-sum::before, .btn::before,
+.sample-note::before, .menu::before, .modal::before, .tip::before, .w-tip::before, .drop::before, .tile::before,
+.range button.on::before, .seg button.on::before {
+  content: '';
+  position: absolute;
+  inset: -4px; /* PAD in Sketch.tsx */
+  background: var(--sk) no-repeat;
+  pointer-events: none;
+}
+/* boxes inside boxes, and small buttons, use a lighter pen */
+.numbers > div, .w-sum, .sample-note, .btn, .tile { --sk-c: var(--ink-3); --sk-w: 1.4; }
+.numbers > div, .w-sum, .sample-note, .tile { background: none; }
+.numbers > div:hover, .w-sum:hover { background: var(--fill); }
+.drop { border: 0; --sk-c: var(--ink-3); --sk-dash: on; }
+.drop.over { --sk-c: var(--blue); }
+.w-card { overflow: visible; }
+.w-row:first-child { border-radius: 12px 12px 0 0; }
+.w-row:last-child { border-radius: 0 0 12px 12px; }
+
+/* "What to do" looks like the blog's callout: blue pen on a blue wash */
+.w-tip { background: var(--wash); --sk-c: var(--blue); --sk-w: 1.3; }
+.w-tip-k { color: var(--blue); }
+
+/* buttons */
+.btn { border: 0; background: none; }
+.btn:hover { background: var(--fill); }
+.btn.solid { background: var(--wash); color: var(--blue); --sk-c: var(--blue); --sk-w: 1.6; }
+.btn.solid:hover { background: var(--wash); opacity: 0.85; }
+.search, .select, .range-custom input { border: 1.5px solid var(--ink-3); border-radius: 10px; background-color: var(--bg); }
+
+/* the picked range or option is circled with the pen */
+.range button.on, .seg button.on { position: relative; background: none; box-shadow: none; color: var(--blue); --sk-c: var(--blue); --sk-w: 1.5; --sk-shape: ellipse; }
+.seg { background: none; }
+
+/* lines inside boxes are dashed, like the blog's rules */
+.lift-row, .link-row, .t th, .t td, .menu hr { border-bottom-style: dashed; border-bottom-color: var(--line); }
+.w-row + .w-row, .list, .panel .list, .list-head, .menu hr { border-top-style: dashed; border-top-color: var(--line); }
+.share .s-grid { border-top-style: dashed; }
+
+/* menus, tooltips and the share window: flat paper, no soft shadow */
+.menu, .modal, .tip { box-shadow: none; }
+.modal-bg { background: color-mix(in srgb, var(--bg) 70%, transparent); }
+.pr-mark { color: var(--blue); }
+
+/* chart marks wobble too */
+.chart .recharts-line-curve, .chart-main .recharts-line-curve { filter: url(#rough-line); }
+
+/* the share card is saved as an image, so it stays clean: no filters, just the hand font */
+.share { border: 1.7px solid #111; border-radius: 12px; font-size-adjust: ex-height 0.56; }
+.share .s-big { letter-spacing: 0; }
+/* inside the collapsed extras, sections are not boxed again */
+details.more .panel::before { display: none; }
+
+/* the name at the top: bigger logo, bold name. The hand font has no bold, so a thin outline thickens the letters. */
+.wordmark { font-size: 26px; gap: 12px; }
+.wordmark svg { width: 60px; height: 38px; }
+:root:not([data-font='plain']) .wordmark { -webkit-text-stroke: 0.9px currentColor; }
+[data-font='plain'] .wordmark { font-weight: 700; }
+@media (max-width: 600px) {
+  .wordmark { font-size: 22px; }
+  .wordmark svg { width: 48px; height: 30px; }
+}
+
+/* watch page: a section is a heading over its card, not a box of its own */
+.w-section::before { display: none; }
+.w-section .h2 { margin-bottom: 4px; }
+
+/* watch page cards: few words, big type */
+.w-row { grid-template-columns: 150px minmax(0, 1fr) 24px; padding: 24px 24px 24px 26px; }
+.w-stat-v { font-size: 40px; line-height: 1; }
+.w-stat-k { font-size: 14px; margin-top: 6px; }
+.w-subject { font-size: 22px; line-height: 1.25; }
+.w-issue { margin: 4px 0 0; font-size: 19px; color: var(--ink-2); }
+.w-tip { margin-top: 14px; padding: 12px 16px; font-size: 19px; max-width: 46ch; }
+.w-tip-k { font-size: 14px; margin-bottom: 2px; }
+@media (max-width: 600px) {
+  .w-row { grid-template-columns: minmax(0, 1fr) 18px; padding: 18px; }
+  .w-stat-v { font-size: 32px; }
+  .w-subject { font-size: 20px; }
+  .w-issue, .w-tip { font-size: 17px; }
+}
+
+/* lift list and link rows: bigger type, like the watch page */
+.lift-row, .list-head { grid-template-columns: minmax(0, 1fr) 140px 120px 84px; }
+.panel .lift-row { padding: 18px 22px; }
+.lift-name { font-size: 21px; line-height: 1.3; }
+.lift-meta { font-size: 15px; margin-top: 2px; }
+.lift-val { font-size: 21px; }
+.lift-val small { font-size: 15px; }
+.lift-chg { font-size: 19px; }
+.spark { height: 36px; }
+.list-head { font-size: 15px; }
+.link-row { grid-template-columns: 170px minmax(0, 1fr) 20px; padding: 20px 22px; font-size: 18px; }
+.link-row b { font-size: 21px; }
+@media (max-width: 860px) {
+  .lift-row, .list-head { grid-template-columns: minmax(0, 1fr) 100px 70px; }
+}
+@media (max-width: 600px) {
+  .panel .lift-row { padding: 16px; }
+  .lift-name { font-size: 18px; }
+  .lift-val { font-size: 18px; }
+  .lift-chg { font-size: 16px; }
+  .link-row { grid-template-columns: minmax(0, 1fr) 16px; padding: 16px; font-size: 16px; }
+  .link-row b { font-size: 19px; }
+}
+@media (max-width: 600px) {
+  .lift-row, .list-head { grid-template-columns: minmax(0, 1fr) 76px 52px; gap: 10px; }
+  .lift-name { white-space: normal; font-size: 17px; }
+  .lift-meta { font-size: 13.5px; }
+  .lift-val { font-size: 17px; }
+  .lift-val small { font-size: 13px; }
+  .lift-chg { font-size: 15px; }
+}
+@media (max-width: 600px) { .list-head { font-size: 13px; } .list-head span { white-space: nowrap; } }
+
+/* momentum: the good-news line on home */
+.momentum { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr) 16px; gap: 18px; align-items: center; width: 100%; margin-top: 12px; padding: 18px 22px; background: none; border: 0; border-radius: 12px; text-align: left; --sk-c: var(--ink); --sk-w: 1.6; }
+.momentum:hover { background: var(--fill); }
+.momentum::before { content: ''; position: absolute; inset: -4px; background: var(--sk) no-repeat; pointer-events: none; }
+.mo-v { font-size: 44px; line-height: 1; }
+.mo-v.good { color: var(--good); }
+.mo-t { font-size: 21px; }
+.mo-s { font-size: 17px; color: var(--ink-2); margin-top: 2px; }
+.mo-lifts { font-size: 15px; color: var(--ink-3); margin-top: 4px; }
+.momentum > svg { width: 16px; height: 16px; color: var(--ink-3); }
+@media (max-width: 600px) {
+  .momentum { grid-template-columns: 70px minmax(0, 1fr) 14px; gap: 12px; padding: 16px; }
+  .mo-v { font-size: 34px; }
+  .mo-s { font-size: 15px; }
 }

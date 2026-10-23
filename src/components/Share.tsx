@@ -1,3 +1,4 @@
+import { Logo } from './Logo'
 import { toPng } from 'html-to-image'
 import { useMemo, useRef, useState } from 'react'
 import { Area, AreaChart, ResponsiveContainer, YAxis } from 'recharts'
@@ -22,7 +23,7 @@ export function ShareModal({ onClose }: { onClose: () => void }) {
       const url = await toPng(ref.current, { pixelRatio: 3, cacheBust: true })
       const a = document.createElement('a')
       a.href = url
-      a.download = 'liftlog.png'
+      a.download = 'statlift.png'
       a.click()
     } finally {
       setBusy(false)
@@ -37,7 +38,7 @@ export function ShareModal({ onClose }: { onClose: () => void }) {
           <button className="ghost icon" onClick={onClose} aria-label="Close"><Icon.close /></button>
         </div>
         <div ref={ref} className="share">
-          <div className="s-name"><Icon.logo /> Liftlog</div>
+          <div className="s-name"><Logo /> Statlift</div>
           <div className="s-big">{gain > 0.01 ? `${Math.round(gain * 100)}% stronger` : `${k.workouts} workouts`}</div>
           <div className="s-sub">{fmtDate(ws[0]?.start ?? range.from)} to {fmtDate(ws.at(-1)?.start ?? range.to)}</div>
           {idx.length > 1 && (
@@ -46,12 +47,12 @@ export function ShareModal({ onClose }: { onClose: () => void }) {
                 <AreaChart data={idx} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="share-fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#2457d6" stopOpacity={0.14} />
-                      <stop offset="100%" stopColor="#2457d6" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#2447c7" stopOpacity={0.14} />
+                      <stop offset="100%" stopColor="#2447c7" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <YAxis hide domain={['dataMin', 'dataMax']} />
-                  <Area type="monotone" dataKey="index" stroke="#2457d6" strokeWidth={2.25} fill="url(#share-fill)" isAnimationActive={false} />
+                  <Area type="monotone" dataKey="index" stroke="#2447c7" strokeWidth={2.25} fill="url(#share-fill)" isAnimationActive={false} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

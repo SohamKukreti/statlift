@@ -1,3 +1,4 @@
+import { hatch } from '../components/Sketch'
 import { useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, ComposedChart, Line, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorBar, cursorLine, grid, STILL } from '../components/chart'
@@ -35,7 +36,6 @@ export function Habits() {
   const typicalGap = h.gaps.reduce((a, b) => (b.count > a.count ? b : a))
   const used = h.hour.filter((d) => d.workouts > 0).map((d) => d.hour)
   const hours = h.hour.slice(Math.max(0, Math.min(...used) - 1), Math.min(24, Math.max(...used) + 2))
-  const dim = t.grid
 
   return (
     <>
@@ -65,7 +65,7 @@ export function Habits() {
                 <YAxis hide />
                 <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={DAYS[payload[0].payload.day]} rows={[{ label: 'Workouts', value: String(payload[0].payload.workouts) }]} /> : null)} />
                 <Bar dataKey="workouts" radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL}>
-                  {h.dow.map((d) => (<Cell key={d.day} fill={d.day === topDay.day ? t.primary : dim} />))}
+                  {h.dow.map((d) => (<Cell key={d.day} fill={d.day === topDay.day ? hatch(t.primary) : hatch(t.axis)} stroke={d.day === topDay.day ? t.primary : t.axis} strokeOpacity={d.day === topDay.day ? 1 : 0.5} strokeWidth={1.5} />))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -80,7 +80,7 @@ export function Habits() {
                 <YAxis hide />
                 <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={`${clock(payload[0].payload.hour)} to ${clock((payload[0].payload.hour + 1) % 24)}`} rows={[{ label: 'Workouts', value: String(payload[0].payload.workouts) }]} /> : null)} />
                 <Bar dataKey="workouts" radius={[3, 3, 0, 0]} {...STILL}>
-                  {hours.map((d) => (<Cell key={d.hour} fill={d.hour === topHour.hour ? t.primary : dim} />))}
+                  {hours.map((d) => (<Cell key={d.hour} fill={d.hour === topHour.hour ? hatch(t.primary) : hatch(t.axis)} stroke={d.hour === topHour.hour ? t.primary : t.axis} strokeOpacity={d.hour === topHour.hour ? 1 : 0.5} strokeWidth={1.5} />))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -113,7 +113,7 @@ export function Habits() {
                 <XAxis dataKey="label" {...axis(t)} dy={6} />
                 <YAxis hide />
                 <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={payload[0].payload.label} rows={[{ label: 'Times', value: String(payload[0].payload.count) }]} /> : null)} />
-                <Bar dataKey="count" fill={t.primary} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
+                <Bar dataKey="count" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
               </BarChart>
             </ResponsiveContainer>
           </div>

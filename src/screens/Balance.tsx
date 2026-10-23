@@ -1,3 +1,4 @@
+import { hatch } from '../components/Sketch'
 import { useMemo, useState } from 'react'
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorBar, cursorLine, grid, STILL } from '../components/chart'
@@ -85,7 +86,7 @@ export function Balance() {
               <XAxis type="number" hide />
               <YAxis type="category" dataKey="muscle" {...axis(t)} tick={{ fill: t.text2, fontSize: 13 }} width={104} />
               <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={payload[0].payload.muscle} rows={[{ label: 'Sets', value: String(payload[0].payload.sets) }, { label: 'Weight lifted', value: `${compact(toUnit(payload[0].payload.volume, unit))} ${unit}` }]} /> : null)} />
-              <Bar dataKey="sets" fill={t.primary} radius={[0, 3, 3, 0]} label={{ position: 'right', fill: t.text2, fontSize: 12 }} {...STILL} />
+              <Bar dataKey="sets" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[0, 3, 3, 0]} label={{ position: 'right', fill: t.text2, fontSize: 12 }} {...STILL} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -108,7 +109,7 @@ export function Balance() {
                 <YAxis {...axis(t)} orientation="right" width={36} tickCount={4} />
                 <Tooltip cursor={cursorLine(t)} content={({ active, payload, label }) => (active && payload?.length ? <Tip title={`Week of ${fmtDay(label as number)}`} rows={[...payload].reverse().filter((p) => (p.value as number) > 0).map((p) => ({ label: String(p.dataKey), value: String(p.value), color: color(String(p.dataKey)) }))} /> : null)} />
                 {present.filter((g) => !hidden.has(g)).map((g) => (
-                  <Area key={g} type="monotone" dataKey={g} stackId="1" stroke={t.surface} strokeWidth={1.5} fill={color(g)} fillOpacity={0.85} {...STILL} />
+                  <Area key={g} type="monotone" dataKey={g} stackId="1" stroke={color(g)} strokeWidth={1.5} fill={hatch(color(g))} {...STILL} />
                 ))}
               </AreaChart>
             </ResponsiveContainer>

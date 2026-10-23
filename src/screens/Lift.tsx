@@ -1,3 +1,4 @@
+import { hatch } from '../components/Sketch'
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Scatter, Tooltip, XAxis, YAxis } from 'recharts'
 import { axis, cursorBar, cursorLine, grid, STILL } from '../components/chart'
@@ -178,7 +179,7 @@ export function Lift({ name }: { name: string }) {
                     <XAxis dataKey="t" type="number" scale="time" domain={['dataMin', 'dataMax']} {...axis(t)} tickFormatter={(v) => fmtMonth(v)} minTickGap={56} padding={{ left: 6, right: 6 }} dy={6} />
                     <YAxis {...axis(t)} orientation="right" tickFormatter={(v) => compact(v)} width={44} tickCount={4} />
                     <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={fmtDate(payload[0].payload.t)} rows={[{ label: 'Volume', value: `${compact(payload[0].payload.volume)} ${unit}` }]} /> : null)} />
-                    <Bar dataKey="volume" fill={t.primary} radius={[2, 2, 0, 0]} maxBarSize={8} {...STILL} />
+                    <Bar dataKey="volume" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[2, 2, 0, 0]} maxBarSize={8} {...STILL} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -193,7 +194,7 @@ export function Lift({ name }: { name: string }) {
                   <XAxis dataKey="label" {...axis(t)} dy={6} />
                   <YAxis hide />
                   <Tooltip cursor={cursorBar(t)} content={({ active, payload }) => (active && payload?.[0] ? <Tip title={`${payload[0].payload.label} reps`} rows={[{ label: 'Sets', value: String(payload[0].payload.sets) }]} /> : null)} />
-                  <Bar dataKey="sets" fill={t.primary} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
+                  <Bar dataKey="sets" fill={hatch(t.primary)} stroke={t.primary} strokeWidth={1.5} radius={[3, 3, 0, 0]} label={{ position: 'top', fill: t.text2, fontSize: 12 }} {...STILL} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

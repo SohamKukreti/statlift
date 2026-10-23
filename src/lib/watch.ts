@@ -10,8 +10,8 @@ export interface Watch {
   subject: string // the lift or body part
   stat: string // the one number that matters, shown big
   statLabel: string // what that number means
-  body: string // what happened
-  tip: string // what to do
+  body: string // the problem, in 3 or 4 words
+  tip: string // what to do, short
   lift?: string
 }
 
@@ -40,21 +40,14 @@ export const URGENT: WatchKind[] = ['backwards', 'heavy', 'fast']
 
 /** Different advice per stalled lift, so the list does not repeat one line. Very long stalls get a swap. */
 const STALL_TIPS = [
-  'Try a new rep range for 4 weeks, for example 6 to 8 reps instead of 10 to 12.',
-  'Add one working set for the next 4 weeks.',
-  'Take one lighter week at about 80% of your usual weight, then push again.',
-  'Rest a little longer between sets, about 2 to 3 minutes, so each set gets your full effort.',
+  'Try 6 to 8 reps for 4 weeks.',
+  'Add one set for 4 weeks.',
+  'Take a light week, then push.',
+  'Rest 2 to 3 minutes between sets.',
 ]
 function stallTip(weeks: number, n: number) {
-  if (weeks >= 26) return 'Swap it for a similar lift for 4 to 6 weeks, for example a cable or dumbbell version, then come back to it.'
+  if (weeks >= 26) return 'Swap to a similar lift for a month.'
   return STALL_TIPS[n % STALL_TIPS.length]
-}
-
-function stallBody(s: ExerciseStats, now: number, unit: Unit) {
-  const best = s.sessions.reduce((a, b) => ((b.e1rm ?? 0) > (a.e1rm ?? 0) ? b : a))
-  const recent = s.sessions.filter((x) => x.date.getTime() > now - 42 * DAY).length
-  const when = best.date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
-  return `Best estimate ${fmtWeight(best.e1rm, unit)} on ${when}. Trained ${recent} times in the last 6 weeks.`
 }
 
 /**
@@ -76,9 +69,9 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
       flagged.add(s.name)
       out.push({
         kind: 'backwards', lift: s.name,
-        subject: s.name, stat: `−${pctTxt(r / b - 1)}`, statLabel: 'in 4 weeks',
-        body: `Your best estimate in the last 4 weeks is ${fmtWeight(r, unit)}. In the 8 weeks before it was ${fmtWeight(b, unit)}.`,
-        tip: 'Look at sleep, food and rest days first. If those are fine, take a lighter week, then build back up.',
+        subject: s.name, stat: `-${pctTxt(r / b - 1)}`, statLabel: 'in 4 weeks',
+        body: 'Your best lifts are dropping',
+        tip: 'Check sleep and food, then take a light week.',
       })
     }
   }
@@ -103,8 +96,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
       out.push({
         kind: 'heavy', lift: s.name,
         subject: s.name, stat: `${Math.round(rPrev)}→${Math.round(rNow)}`, statLabel: 'reps per set',
-        body: `Last session you used ${fmtWeight(last.topWeight, unit)} (up ${pctTxt(last.topWeight / wPrev - 1)}), but reps per set fell from about ${Math.round(rPrev)} to ${Math.round(rNow)}. ${noGain ? 'Your estimated max did not go up.' : 'That is far below the reps you usually do.'}`,
-        tip: 'The jump was too big. Go back to the old weight and add reps until you reach the top of your rep range, then add a small amount of weight.',
+        body: 'Weight up, reps down',
+        tip: 'Go back to the old weight and add reps.',
       })
       continue
     }
@@ -119,8 +112,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
         out.push({
           kind: 'fast', lift: s.name,
           subject: s.name, stat: `+${pctTxt(w / b - 1)}`, statLabel: 'weight in 2 weeks',
-          body: `From ${fmtWeight(b, unit)} to ${fmtWeight(w, unit)}. Muscles adapt faster than tendons and joints.`,
-          tip: 'Stay at this weight until all your sets reach your target reps with good form before you add more.',
+          body: 'Weight jumped too fast',
+          tip: 'Stay at this weight until every set hits your reps.',
         })
       }
     }
@@ -137,15 +130,15 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
       out.push({
         kind: 'stalled', lift: s.name,
         subject: s.name, stat: String(wk), statLabel: 'weeks, no new best',
-        body: stallBody(s, now, unit),
+        body: 'No new best lately',
         tip: stallTip(wk, stallN++),
       })
     else if (same)
       out.push({
         kind: 'stalled', lift: s.name,
         subject: s.name, stat: '4×', statLabel: 'same top set',
-        body: `${fmtWeight(tail[0].topWeight, unit)} × ${tail[0].topWeightReps} in each of your last 4 sessions.`,
-        tip: 'Next time, add one rep to your first set. When you reach the top of your rep range, add a little weight.',
+        body: `Same ${fmtWeight(tail[0].topWeight, unit)} × ${tail[0].topWeightReps} every time`,
+        tip: 'Add one rep next time.',
       })
   }
 
@@ -184,8 +177,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
     out.push({
       kind: 'load',
       subject: x.g, stat: `+${pctTxt(x.cur / x.usual - 1)}`, statLabel: 'sets this week',
-      body: `${x.cur} sets in the last 7 days. Your usual week is about ${Math.round(x.usual)}.`,
-      tip: 'Big jumps in weekly sets raise injury risk. Add 2 to 4 sets a week at most.',
+      body: 'Sets jumped this week',
+      tip: 'Add 2 to 4 sets a week at most.',
     })
 
   // weekly sets per body group over the last 4 weeks: too few or too many
@@ -198,8 +191,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
         out.push({
           kind: 'load',
           subject: g, stat: perWeek.toFixed(1), statLabel: 'sets a week',
-          body: 'Average working sets a week over the last 4 weeks. That is low.',
-          tip: 'Most people grow best with about 10 to 20 hard sets per muscle group each week.',
+          body: 'Too few sets',
+          tip: 'Aim for 10 to 20 sets a week.',
         })
     }
     const mSets = new Map<string, number>()
@@ -215,8 +208,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
         out.push({
           kind: 'load',
           subject: mu, stat: String(Math.round(n / 4)), statLabel: 'sets a week',
-          body: 'That is a lot for one muscle. Past about 20 to 25 sets, extra sets add fatigue more than growth.',
-          tip: 'Move a few of these sets to a muscle that gets less work.',
+          body: 'Too many sets',
+          tip: 'Move a few sets to another muscle.',
         })
   }
 
@@ -234,16 +227,16 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
       out.push({
         kind: 'balance',
         subject: 'Push and pull', stat: `+${Math.round((ratio - 1) * 100)}%`, statLabel: 'more push than pull',
-        body: `Last 8 weeks: ${split.Push} push sets and ${split.Pull} pull sets.`,
-        tip: 'Too much pressing and too little pulling can pull the shoulders forward. Add rows or pulldowns.',
+        body: 'More pushing than pulling',
+        tip: 'Add rows or pulldowns.',
       })
     const legs = split.Legs / tot
     if (legs < 0.2)
       out.push({
         kind: 'balance',
         subject: 'Legs', stat: `${Math.round(legs * 100)}%`, statLabel: 'of your sets',
-        body: `Last 8 weeks: ${split.Legs} leg sets out of ${tot}.`,
-        tip: 'Legs are about half your muscle. Aim for about a quarter to a third of your sets.',
+        body: 'Too little leg work',
+        tip: 'Make a quarter of your sets legs.',
       })
   }
 
@@ -262,8 +255,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
     out.push({
       kind: 'load',
       subject: 'All training', stat: String(sinceAny), statLabel: 'days since last workout',
-      body: 'Strength holds well for 2 to 3 weeks, then starts to drop.',
-      tip: 'When you go back, use about 10% less weight for the first week.',
+      body: 'Long break from training',
+      tip: 'Start back 10% lighter.',
     })
   } else {
     for (const g of GROUPS) {
@@ -273,8 +266,8 @@ export function watchOuts(all: Workout[], stats: ExerciseStats[], unit: Unit, no
         out.push({
           kind: 'balance',
           subject: g, stat: String(days), statLabel: 'days since trained',
-          body: `You usually train ${g.toLowerCase()} more often than this.`,
-          tip: 'Most muscles do best when trained about twice a week.',
+          body: 'Not trained lately',
+          tip: 'Train it twice a week.',
         })
     }
   }

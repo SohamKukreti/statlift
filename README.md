@@ -1,4 +1,4 @@
-# Liftlog
+# Statlift
 
 Turn a Hevy CSV export into an interactive dashboard of your training: strength trends (estimated 1RM),
 personal records, muscle balance, habits and streaks. Everything runs in the browser; the file never leaves it.
