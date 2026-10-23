@@ -16,6 +16,7 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white">
   <img alt="Vite" src="https://img.shields.io/badge/Vite-build-646cff?logo=vite&logoColor=white">
   <img alt="No backend" src="https://img.shields.io/badge/backend-none-111111">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2447c7"></a>
 </p>
 
 <p align="center">
@@ -133,6 +134,10 @@ npm run build      # make sure it builds
 ```
 
 Please never commit a real workout export. `*.csv` is ignored on purpose.
+
+## License
+
+The code is under the [MIT License](LICENSE). The fonts and the Compare data keep their own terms: see [`src/assets/FONTS.md`](src/assets/FONTS.md) and the sources above.
 
 ## Disclaimer
 
