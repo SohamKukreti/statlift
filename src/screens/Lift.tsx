@@ -8,6 +8,7 @@ import { inRange, metricFor, stalledWeeks } from '../lib/analytics'
 import { compact, fmtDate, fmtDay, fmtMonth, fmtSeconds, fmtWeight, pct, round, toUnit } from '../lib/format'
 import { guessMuscle, MUSCLE_NAMES } from '../lib/muscles'
 import { useApp } from '../lib/store'
+import { LITE } from '../lib/lite'
 import { useChart } from '../lib/theme'
 import type { ExerciseKind, Unit } from '../lib/types'
 
@@ -122,7 +123,7 @@ export function Lift({ name }: { name: string }) {
                 }}
               />
               {weighted && showTop && <Line type="stepAfter" dataKey="top" stroke={t.series[1]} strokeWidth={1.5} dot={false} connectNulls {...STILL} />}
-              <Line type="monotone" dataKey="metric" stroke={t.primary} strokeWidth={2} connectNulls dot={{ r: 2.5, fill: t.surface, stroke: t.primary, strokeWidth: 1.5 }} activeDot={{ r: 5, fill: t.primary, stroke: t.surface, strokeWidth: 2 }} {...STILL} />
+              <Line type="monotone" dataKey="metric" stroke={t.primary} strokeWidth={2} connectNulls dot={LITE && chart.length > 60 ? false : { r: 2.5, fill: t.surface, stroke: t.primary, strokeWidth: 1.5 }} activeDot={{ r: 5, fill: t.primary, stroke: t.surface, strokeWidth: 2 }} {...STILL} />
               <Scatter dataKey="pr" shape={(p: { cx?: number; cy?: number }) => (p.cx && p.cy ? <circle cx={p.cx} cy={p.cy} r={4} fill={t.primary} stroke={t.surface} strokeWidth={1.5} /> : <g />)} {...STILL} />
             </ComposedChart>
           </ResponsiveContainer>

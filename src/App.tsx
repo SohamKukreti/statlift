@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, type ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { buildExerciseStats, DAY, filterWorkouts, startOfDay, type Range } from './lib/analytics'
 import { clearCsv, loadCsv, parseCsvText, rowsToDataset, saveCsv } from './lib/parse'
 import { loadOverrides, saveOverrides } from './lib/muscles'
@@ -8,19 +8,32 @@ import { AppCtx, pref, setPref, type Preset } from './lib/store'
 import { CHART, ThemeCtx, type Mode } from './lib/theme'
 import type { Dataset, Unit } from './lib/types'
 import { Icon, Seg } from './components/ui'
-import { ShareModal } from './components/Share'
 import { Logo } from './components/Logo'
 import { SketchDefs, useSketchBoxes } from './components/Sketch'
 import { Landing } from './screens/Landing'
 import { Home } from './screens/Home'
-import { Lift } from './screens/Lift'
-import { Lifts } from './screens/Lifts'
-import { Records } from './screens/Records'
-import { Calendar } from './screens/Calendar'
-import { Balance } from './screens/Balance'
-import { Habits } from './screens/Habits'
-import { Watch } from './screens/Watch'
-import { Compare } from './screens/Compare'
+
+// Home loads with the app. The other screens download in the background once it shows, so the first visit is quicker.
+const loaders: (() => Promise<unknown>)[] = []
+const prefetch = () => loaders.forEach((load) => load())
+
+/** A screen loaded on demand. Once its code is in, it renders at once: React holds a just-loaded lazy screen back ~300ms. */
+function screen<P extends object>(load: () => Promise<Record<string, unknown>>, name: string) {
+  let Ready: ComponentType<P> | null = null
+  const get = () => load().then((m) => (Ready = m[name] as ComponentType<P>))
+  loaders.push(get)
+  const Lazy = lazy(() => get().then((c) => ({ default: c })))
+  return (props: P) => (Ready ? <Ready {...props} /> : <Lazy {...props} />)
+}
+const Lift = screen<{ name: string }>(() => import('./screens/Lift'), 'Lift')
+const Lifts = screen(() => import('./screens/Lifts'), 'Lifts')
+const Records = screen(() => import('./screens/Records'), 'Records')
+const Calendar = screen(() => import('./screens/Calendar'), 'Calendar')
+const Balance = screen(() => import('./screens/Balance'), 'Balance')
+const Habits = screen(() => import('./screens/Habits'), 'Habits')
+const Watch = screen(() => import('./screens/Watch'), 'Watch')
+const Compare = screen(() => import('./screens/Compare'), 'Compare')
+const ShareModal = screen<{ onClose: () => void }>(() => import('./components/Share'), 'ShareModal')
 
 type Font = 'hand' | 'plain'
 
@@ -62,6 +75,11 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = mode
   }, [mode])
+  useEffect(() => {
+    if (!data) return
+    const id = setTimeout(prefetch, 1500)
+    return () => clearTimeout(id)
+  }, [data])
   useEffect(() => setPref('unit', unit), [unit])
   useEffect(() => {
     if (preset !== 'custom') setPref('range2', preset)
@@ -189,6 +207,7 @@ export default function App() {
             )}
 
             <main>
+              <Suspense fallback={null}>
               {route.page === 'home' && <Home />}
               {route.page === 'lift' && <Lift name={route.name} />}
               {route.page === 'lifts' && <Lifts />}
@@ -198,10 +217,11 @@ export default function App() {
               {route.page === 'habits' && <Habits />}
               {route.page === 'watch' && <Watch />}
               {route.page === 'compare' && <Compare />}
+              </Suspense>
             </main>
 
             <footer className="foot">Your file stays in this browser. Nothing is uploaded.</footer>
-            {sharing && <ShareModal onClose={() => setSharing(false)} />}
+            {sharing && <Suspense fallback={null}><ShareModal onClose={() => setSharing(false)} /></Suspense>}
           </AppCtx.Provider>
         )}
       </div>

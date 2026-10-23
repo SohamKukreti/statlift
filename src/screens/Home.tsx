@@ -9,6 +9,7 @@ import { DAY, habits, kpis, liftSummaries, momentum, setsByMuscle, strengthIndex
 import { fmtDay, fmtDuration, fmtHour, fmtMonth, plural, round } from '../lib/format'
 import { go } from '../lib/route'
 import { useApp } from '../lib/store'
+import { LITE } from '../lib/lite'
 import { useChart } from '../lib/theme'
 import { KIND_TITLE, watchOuts } from '../lib/watch'
 
@@ -117,8 +118,8 @@ export function Home() {
                   ) : null
                 }
               />
-              <Area type="monotone" dataKey="index" stroke="none" fill={hatch(t.primary)} fillOpacity={0.55} animationDuration={1200} />
-              <Line type="monotone" dataKey="index" stroke={t.primary} strokeWidth={2.25} dot={false} activeDot={{ r: 4.5, fill: t.primary, stroke: t.surface, strokeWidth: 2 }} animationDuration={1200} />
+              <Area type="monotone" dataKey="index" stroke="none" fill={hatch(t.primary)} fillOpacity={0.55} animationDuration={1200} isAnimationActive={!LITE} />
+              <Line type="monotone" dataKey="index" stroke={t.primary} strokeWidth={2.25} dot={false} activeDot={{ r: 4.5, fill: t.primary, stroke: t.surface, strokeWidth: 2 }} animationDuration={1200} isAnimationActive={!LITE} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>

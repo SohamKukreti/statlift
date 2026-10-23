@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import rough from 'roughjs'
+import { LITE } from '../lib/lite'
 import { useChart } from '../lib/theme'
 
-/** Pattern id for a colour: chart fills use pen hatching, like Excalidraw. */
-export const hatch = (color: string) => `url(#h-${color.replace('#', '')})`
+/** Pattern id for a colour: chart fills use pen hatching, like Excalidraw. The lite look uses a flat tint. */
+export const hatch = (color: string) => (LITE ? `${color}38` : `url(#h-${color.replace('#', '')})`)
 
 /**
  * One hidden SVG with the shared chart tools:
@@ -12,6 +13,7 @@ export const hatch = (color: string) => `url(#h-${color.replace('#', '')})`
  */
 export function SketchDefs() {
   const t = useChart()
+  if (LITE) return null
   const colors = [...new Set([t.primary, t.axis, ...t.series])]
   return (
     <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden>
@@ -71,6 +73,7 @@ function draw(el: HTMLElement) {
 /** Keeps every box outline drawn: new boxes, resized boxes and theme changes all redraw. */
 export function useSketchBoxes() {
   useEffect(() => {
+    if (LITE) return // the lite look draws plain CSS borders instead
     const sizes = new WeakMap<Element, string>()
     const ro = new ResizeObserver((entries) => {
       for (const e of entries) {

@@ -542,3 +542,18 @@ details.more .panel::before { display: none; }
   .t.big .linkish { font-size: 16px; }
   .t.big td { padding: 12px 10px 12px 0; }
 }
+
+/* ================= lite look: phones and weak devices (see lib/lite.ts) ================= */
+/* Plain CSS borders replace the roughjs outlines, and chart lines do not wobble. */
+[data-lite] .panel::before, [data-lite] details.more::before, [data-lite] .watch-line::before, [data-lite] .w-card::before,
+[data-lite] .numbers > div::before, [data-lite] .w-sum::before, [data-lite] .btn::before, [data-lite] .sample-note::before,
+[data-lite] .menu::before, [data-lite] .modal::before, [data-lite] .tip::before, [data-lite] .w-tip::before, [data-lite] .drop::before,
+[data-lite] .tile::before, [data-lite] .range button.on::before, [data-lite] .seg button.on::before, [data-lite] .momentum::before {
+  inset: 0;
+  background: none;
+  border: calc(var(--sk-w) * 1px) solid var(--sk-c);
+  border-radius: inherit;
+}
+[data-lite] .drop::before { border-style: dashed; }
+[data-lite] .range button.on::before, [data-lite] .seg button.on::before { border-radius: 999px; }
+[data-lite] .chart .recharts-line-curve, [data-lite] .chart-main .recharts-line-curve { filter: none; }
