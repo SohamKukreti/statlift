@@ -20,6 +20,10 @@
 </p>
 
 <p align="center">
+  <a href="https://sohamkukreti.github.io/statlift/"><b>Open Statlift</b></a> · runs in your browser, nothing to install
+</p>
+
+<p align="center">
   <img src="docs/home.png" alt="Statlift home page with sample data: 36% stronger, momentum, watch-outs and the strength chart" width="860">
 </p>
 
@@ -74,7 +78,9 @@ npm run build      # static site in dist/
 npm run preview    # serve the build locally
 ```
 
-`dist/` is plain static files, so any static host works (Vercel, Netlify, Cloudflare Pages, GitHub Pages). Pages use hash links (`#/records`), so no server rewrite rules are needed.
+`dist/` is plain static files, so any static host works. Pages use hash links (`#/records`), so no server rewrite rules are needed.
+
+The live site is deployed to GitHub Pages by [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) on every push to `main`. It builds with `BASE_PATH=/statlift/`, because Pages serves the site from that folder.
 
 ## How the numbers work
 
