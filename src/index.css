@@ -385,6 +385,9 @@ details.more .grid-2 > .panel { margin-top: 12px; }
   box-shadow: none;
   --sk-c: var(--ink);
   --sk-w: 1.6;
+  /* custom properties pass down to children, so each box resets the pen style */
+  --sk-dash: off;
+  --sk-shape: rect;
 }
 .panel::before, details.more::before, .watch-line::before, .w-card::before, .numbers > div::before, .w-sum::before, .btn::before,
 .sample-note::before, .menu::before, .modal::before, .tip::before, .w-tip::before, .drop::before, .tile::before,
