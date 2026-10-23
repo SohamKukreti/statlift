@@ -23,24 +23,6 @@
 }
 :root[data-font='plain'] { --font: 'Lora', Georgia, serif; }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-      color-scheme: dark;
-  --bg: #17181b;
-  --fill: #1f2024;
-  --fill-2: #27282d;
-  --line: #3a3b40;
-  --ink: #ecebe7;
-  --ink-2: #a8a59e;
-  --ink-3: #85827b;
-  --blue: #93a8ff;
-  --wash: #22273a;
-  --good: #6fcf8f;
-  --warn: #f0a07f;
-  --focus: #93a8ff;
-  --orange: #f0a07f;
-  }
-}
 :root[data-theme='dark'] {
       color-scheme: dark;
   --bg: #17181b;

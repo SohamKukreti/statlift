@@ -40,10 +40,9 @@ function initialData(): Dataset | null {
   }
 }
 
-const systemMode = (): Mode => (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
 
 export default function App() {
-  const [mode, setMode] = useState<Mode>(() => pref<Mode>('theme', systemMode()))
+  const [mode, setMode] = useState<Mode>(() => pref<Mode>('theme', 'light')) // light unless the user picks dark
   useSketchBoxes()
   const [font, setFont] = useState<Font>(() => pref<Font>('font', 'hand'))
   useEffect(() => {
