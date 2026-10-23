@@ -42,17 +42,6 @@ const fromInput = (s: string) => {
   return new Date(y, m - 1, d)
 }
 
-function initialData(): Dataset | null {
-  const saved = loadCsv()
-  if (!saved) return null
-  try {
-    return parseCsvText(saved.text, saved.name)
-  } catch {
-    clearCsv()
-    return null
-  }
-}
-
 
 export default function App() {
   const [mode, setMode] = useState<Mode>(() => pref<Mode>('theme', 'light')) // light unless the user picks dark
@@ -62,8 +51,9 @@ export default function App() {
     document.documentElement.dataset.font = font
     setPref('font', font)
   }, [font])
-  const [data, setData] = useState<Dataset | null>(initialData)
-  const [unit, setUnit] = useState<Unit>(() => pref<Unit>('unit', data?.sourceUnit ?? 'kg'))
+  const [data, setData] = useState<Dataset | null>(null)
+  const [booting, setBooting] = useState(true) // reading the saved file back
+  const [unit, setUnit] = useState<Unit>(() => pref<Unit>('unit', 'kg'))
   const [preset, setPreset] = useState<Preset>(() => pref<Preset>('range2', 'all'))
   const [custom, setCustom] = useState<{ from: string; to: string } | null>(null)
   const [overrides, setOverrides] = useState<Record<string, string>>(loadOverrides)
@@ -80,7 +70,23 @@ export default function App() {
     const id = setTimeout(prefetch, 1500)
     return () => clearTimeout(id)
   }, [data])
-  useEffect(() => setPref('unit', unit), [unit])
+  useEffect(() => {
+    loadCsv()
+      .then((saved) => {
+        if (!saved) return
+        try {
+          const d = parseCsvText(saved.text, saved.name)
+          setData(d)
+          setUnit(pref<Unit>('unit', d.sourceUnit))
+        } catch {
+          clearCsv()
+        }
+      })
+      .finally(() => setBooting(false))
+  }, [])
+  useEffect(() => {
+    if (!booting) setPref('unit', unit)
+  }, [unit, booting])
   useEffect(() => {
     if (preset !== 'custom') setPref('range2', preset)
   }, [preset])
@@ -148,7 +154,7 @@ export default function App() {
     <ThemeCtx.Provider value={CHART[mode]}>
       <SketchDefs />
       <div className="page">
-        {!data ? (
+        {booting ? null : !data ? (
           <>
             <header className="top">
               <span className="wordmark"><Logo /> Statlift</span>

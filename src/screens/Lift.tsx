@@ -5,7 +5,7 @@ import { axis, cursorBar, cursorLine, grid, STILL } from '../components/chart'
 import { RangeControl } from '../components/RangeControl'
 import { Back, Legend, More, Tip } from '../components/ui'
 import { inRange, metricFor, stalledWeeks } from '../lib/analytics'
-import { compact, fmtDate, fmtDay, fmtMonth, fmtSeconds, fmtWeight, pct, round, toUnit } from '../lib/format'
+import { compact, distUnit, fmtDate, fmtDay, fmtMonth, fmtSeconds, fmtWeight, pct, round, toDist, toUnit } from '../lib/format'
 import { guessMuscle, MUSCLE_NAMES } from '../lib/muscles'
 import { useApp } from '../lib/store'
 import { LITE } from '../lib/lite'
@@ -19,7 +19,7 @@ export function metricName(kind: ExerciseKind) {
 export function fmtMetric(v: number, kind: ExerciseKind, unit: Unit) {
   if (kind === 'weighted') return fmtWeight(v, unit)
   if (kind === 'bodyweight') return `${Math.round(v)} reps`
-  if (kind === 'cardio') return `${round(v, 2)} km`
+  if (kind === 'cardio') return `${round(toDist(v, unit), 2)} ${distUnit(unit)}`
   return fmtSeconds(v)
 }
 
@@ -48,9 +48,9 @@ export function Lift({ name }: { name: string }) {
   const best = vals.length ? Math.max(...vals) : 0
   const change = vals.length >= 3 && first ? now / first - 1 : null
   const stall = stalledWeeks(stat)
-  const conv = (v: number | null) => (v === null ? null : weighted ? toUnit(v, unit) : v)
-  const big = (v: number) => (weighted ? round(toUnit(v, unit), 1) : kind === 'timed' ? fmtSeconds(v) : round(v, kind === 'cardio' ? 2 : 0))
-  const bigUnit = weighted ? unit : kind === 'bodyweight' ? 'reps' : kind === 'cardio' ? 'km' : ''
+  const conv = (v: number | null) => (v === null ? null : weighted ? toUnit(v, unit) : kind === 'cardio' ? toDist(v, unit) : v)
+  const big = (v: number) => (weighted ? round(toUnit(v, unit), 1) : kind === 'timed' ? fmtSeconds(v) : kind === 'cardio' ? round(toDist(v, unit), 2) : round(v, 0))
+  const bigUnit = weighted ? unit : kind === 'bodyweight' ? 'reps' : kind === 'cardio' ? distUnit(unit) : ''
 
   const chart = sessions.map((s) => ({
     t: s.date.getTime(),
@@ -147,7 +147,7 @@ export function Lift({ name }: { name: string }) {
                       <div className="sets">
                         {s.workSets.map((x, i) => {
                           const isTop = weighted ? x.weightKg === s.topWeight && x.reps === s.topWeightReps : x.reps === s.bestReps
-                          const label = x.weightKg && x.reps ? `${round(toUnit(x.weightKg, unit), 1)} × ${x.reps}` : x.reps ? `${x.reps} reps` : x.distanceKm ? `${round(x.distanceKm, 2)} km` : x.durationS ? fmtSeconds(x.durationS) : '—'
+                          const label = x.weightKg && x.reps ? `${round(toUnit(x.weightKg, unit), 1)} × ${x.reps}` : x.reps ? `${x.reps} reps` : x.distanceKm ? `${round(toDist(x.distanceKm, unit), 2)} ${distUnit(unit)}` : x.durationS ? fmtSeconds(x.durationS) : '—'
                           return <span key={i} className={isTop ? 'best' : ''}>{label}</span>
                         })}
                       </div>

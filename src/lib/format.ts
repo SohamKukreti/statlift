@@ -4,6 +4,10 @@ const LB = 0.45359237
 
 export const toUnit = (kg: number, u: Unit) => (u === 'kg' ? kg : kg / LB)
 
+/** Distance follows the weight unit: km with kg, miles with lb. */
+export const distUnit = (u: Unit) => (u === 'kg' ? 'km' : 'mi')
+export const toDist = (km: number, u: Unit) => (u === 'kg' ? km : km / 1.609344)
+
 export function fmtWeight(kg: number | null | undefined, u: Unit, digits = 1) {
   if (kg === null || kg === undefined || !isFinite(kg)) return '—'
   const v = toUnit(kg, u)

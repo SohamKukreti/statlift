@@ -1,5 +1,5 @@
 import { stalledWeeks, type LiftSummary } from '../lib/analytics'
-import { fmtSeconds, pct, round, toUnit } from '../lib/format'
+import { distUnit, fmtSeconds, pct, round, toDist, toUnit } from '../lib/format'
 import { go, liftPath } from '../lib/route'
 import { useChart } from '../lib/theme'
 import type { Unit } from '../lib/types'
@@ -14,7 +14,7 @@ export function liftValue(l: LiftSummary, unit: Unit, v = l.now) {
   const k = l.stat.kind
   if (k === 'weighted') return <>{round(toUnit(v, unit), 1)}<small>{unit}</small></>
   if (k === 'bodyweight') return <>{Math.round(v)}<small>reps</small></>
-  if (k === 'cardio') return <>{round(v, 1)}<small>km</small></>
+  if (k === 'cardio') return <>{round(toDist(v, unit), 1)}<small>{distUnit(unit)}</small></>
   return <>{fmtSeconds(v)}</>
 }
 

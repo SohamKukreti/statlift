@@ -5,7 +5,7 @@ import { axis, cursorBar, cursorLine, grid, STILL } from '../components/chart'
 import { RangeControl } from '../components/RangeControl'
 import { Back, More, Tip } from '../components/ui'
 import { habits } from '../lib/analytics'
-import { DOW, fmtDate, fmtDuration, fmtHour, fmtMonth, fmtSeconds, round } from '../lib/format'
+import { distUnit, DOW, fmtDate, fmtDuration, fmtHour, fmtMonth, fmtSeconds, round, toDist } from '../lib/format'
 import { useApp } from '../lib/store'
 import { useChart } from '../lib/theme'
 
@@ -13,7 +13,7 @@ const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
 const clock = (h: number) => (h === 0 ? '12 am' : h === 12 ? '12 pm' : h < 12 ? `${h} am` : `${h - 12} pm`)
 
 export function Habits() {
-  const { ws, stats, range } = useApp()
+  const { ws, stats, range, unit } = useApp()
   const t = useChart()
   const h = useMemo(() => habits(ws), [ws])
   const dur = useMemo(
@@ -133,9 +133,9 @@ export function Habits() {
                     <tr key={s.name}>
                       <td>{s.name}</td>
                       <td className="r">{sessions.length}</td>
-                      <td className="r">{km > 0 ? `${round(km, 1)} km` : '—'}</td>
+                      <td className="r">{km > 0 ? `${round(toDist(km, unit), 1)} ${distUnit(unit)}` : '—'}</td>
                       <td className="r">{fmtSeconds(sec)}</td>
-                      <td className="r">{km > 0 && sec > 0 ? `${fmtSeconds(sec / km)} per km` : '—'}</td>
+                      <td className="r">{km > 0 && sec > 0 ? `${fmtSeconds(sec / toDist(km, unit))} per ${distUnit(unit)}` : '—'}</td>
                     </tr>
                   )
                 })}

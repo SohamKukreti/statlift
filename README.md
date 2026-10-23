@@ -69,7 +69,7 @@ No Hevy file yet? Click **Try sample data**. It loads a made-up lifter so you ca
 
 ### Export your data from Hevy
 
-In the Hevy app: **Profile → Settings → Export & Import Data → Export Workouts**. You get one CSV file. Both kg and lb exports work.
+In the Hevy app: **Profile → Settings → Export & Import Data → Export Workouts**. You get one CSV file. Both kg and lb exports work, from the app or the website, in any language Hevy offers (dates like `23 Oct 2026`, `20.01.2025`, `20 janv. 2025` or `2025/01/20` are all read).
 
 ### Build and deploy
 
@@ -103,7 +103,7 @@ Each lift on the Compare page links to the exact table it uses. Machine lifts va
 ## Privacy
 
 - Your CSV is read in the browser with [Papa Parse](https://www.papaparse.com) and never sent anywhere.
-- The last file you loaded, your settings and your Compare profile (sex, bodyweight, age) are kept in your browser's local storage so they are there next time. **Settings → Remove my data from this browser** clears them.
+- The last file you loaded, your settings and your Compare profile (sex, bodyweight, age) are kept in your browser's storage (IndexedDB for the file, so big exports fit) so they are there next time. **Settings → Remove my data from this browser** clears them.
 - There are no analytics and no cookies.
 
 ## Project structure
@@ -111,7 +111,7 @@ Each lift on the Compare page links to the exact table it uses. Machine lifts va
 ```
 src/
   lib/
-    parse.ts        CSV → workouts: date formats, kg/lb, set types
+    parse.ts        CSV → workouts: date formats in every language, kg/lb, set types
     analytics.ts    1-rep max, new bests, streaks, strength index, momentum
     watch.ts        the watch-out rules
     compare.ts      places your lifts against the standards
