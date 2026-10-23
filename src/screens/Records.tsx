@@ -83,10 +83,10 @@ export function Records() {
           </select>
         </div>
         <div className="table-wrap">
-          <table className="t">
+          <table className="t big">
             <thead><tr><th>Date</th><th>Lift</th><th className="r">New best</th><th className="r">Jump</th></tr></thead>
             <tbody>
-              {list.slice(0, all ? undefined : 12).map((p, i) => (
+              {list.slice(0, all ? undefined : 10).map((p, i) => (
                 <tr key={i}>
                   <td className="nowrap">{fmtDay(p.date)}<span className="muted"> {p.date.getFullYear()}</span></td>
                   <td><button className="linkish" onClick={() => go(liftPath(p.name))}>{p.name}</button></td>
@@ -97,7 +97,7 @@ export function Records() {
             </tbody>
           </table>
         </div>
-        {list.length > 12 && <div className="list-foot"><button className="btn" onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show all ${list.length}`}</button></div>}
+        {list.length > 10 && <div className="list-foot"><button className="btn" onClick={() => setAll(!all)}>{all ? 'Show fewer' : `Show all ${list.length}`}</button></div>}
         {!list.length && <p className="empty">No new bests in this range.</p>}
       </section>
     </>

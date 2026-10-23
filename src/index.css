@@ -545,3 +545,15 @@ details.more .panel::before { display: none; }
   .list-head.cmp-grid > :nth-child(2) { display: none; }
 }
 @media (max-width: 600px) { .list-head.cmp-grid > :last-child { white-space: normal; text-align: right; line-height: 1.2; } }
+
+/* records: the list of new bests in big type */
+.t.big { font-size: 20px; }
+.t.big th { font-size: 15px; padding-bottom: 12px; }
+.t.big td { padding: 16px 16px 16px 0; }
+.t.big td.r, .t.big th.r { padding-right: 0; }
+.t.big .linkish { font-size: 20px; }
+@media (max-width: 600px) {
+  .t.big { font-size: 16px; }
+  .t.big .linkish { font-size: 16px; }
+  .t.big td { padding: 12px 10px 12px 0; }
+}
