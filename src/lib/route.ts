@@ -9,12 +9,13 @@ export type Route =
   | { page: 'balance' }
   | { page: 'habits' }
   | { page: 'watch' }
+  | { page: 'compare' }
 
 /** Hash routes so the browser back button works and links can be shared. */
 export function parse(hash: string): Route {
   const [, a, b] = hash.replace(/^#/, '').split('/')
   if (a === 'lift' && b) return { page: 'lift', name: decodeURIComponent(b) }
-  if (a === 'lifts' || a === 'records' || a === 'calendar' || a === 'balance' || a === 'habits' || a === 'watch') return { page: a }
+  if (a === 'lifts' || a === 'records' || a === 'calendar' || a === 'balance' || a === 'habits' || a === 'watch' || a === 'compare') return { page: a }
   return { page: 'home' }
 }
 

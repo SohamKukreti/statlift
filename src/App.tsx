@@ -20,6 +20,7 @@ import { Calendar } from './screens/Calendar'
 import { Balance } from './screens/Balance'
 import { Habits } from './screens/Habits'
 import { Watch } from './screens/Watch'
+import { Compare } from './screens/Compare'
 
 type Font = 'hand' | 'plain'
 
@@ -197,6 +198,7 @@ export default function App() {
               {route.page === 'balance' && <Balance />}
               {route.page === 'habits' && <Habits />}
               {route.page === 'watch' && <Watch />}
+              {route.page === 'compare' && <Compare />}
             </main>
 
             <footer className="foot">Your file stays in this browser. Nothing is uploaded.</footer>

@@ -142,6 +142,7 @@ export function Home() {
       <section className="panel">
         <h2 className="h2">Go deeper</h2>
         <div className="list">
+          <LinkRow title="Compare" to="compare" text="How strong you are next to other lifters, lift by lift." />
           <LinkRow title="Records" to="records" text={lastPR ? `${plural(k.prs, 'new best')}. Latest: ${lastPR.name}, ${ago(lastPR.date)}.` : 'No records yet.'} />
           <LinkRow title="Calendar" to="calendar" text={`Every day you trained. Longest run: ${plural(streak.longest, 'week')} in a row.`} />
           <LinkRow title="Body balance" to="balance" text={muscles[0] ? `${muscles[0].muscle} gets the most sets. See which muscles get the least.` : 'Sets per muscle.'} />
